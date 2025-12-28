@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Calendar, Download, Eye, ThumbsUp } from 'lucide-react'
 
 interface ResourceProps {
-  id: number
+  id: string | number
   title: string
   description: string | null
   category: string
@@ -14,6 +14,7 @@ interface ResourceProps {
   isVip?: boolean  // Mock data field
   image_url?: string // Supabase field
   image?: string     // Mock data field
+  downloadUrl?: string
 }
 
 export default function ResourceCard({ resource }: { resource: ResourceProps }) {
