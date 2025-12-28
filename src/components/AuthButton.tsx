@@ -1,7 +1,6 @@
 'use client'
 
 import { createClient } from '@/utils/supabase/client'
-import { Button } from '@/components/ui/button' // We'll need to create this or use standard html button for now
 import { LogIn, LogOut, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { User as SupabaseUser } from '@supabase/supabase-js'
