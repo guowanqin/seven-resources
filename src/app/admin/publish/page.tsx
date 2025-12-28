@@ -46,25 +46,28 @@ export default function PublishPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">资源分类</label>
             <div className="flex gap-4">
               <select 
-                name="category" 
-                className="flex-1 px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              >
-                <option value="实用软件">实用软件</option>
-                <option value="技术教程">技术教程</option>
-                <option value="源码分享">源码分享</option>
-                <option value="操作系统">操作系统</option>
-                <option value="游戏娱乐">游戏娱乐</option>
-                <option value="媒体素材">媒体素材</option>
-                <option value="其它资源">其它资源</option>
-              </select>
-              <button
-                type="button"
-                className="px-4 py-2 bg-purple-100 text-purple-600 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors flex items-center gap-2"
-                onClick={() => alert('AI 自动分类功能即将上线！')}
-              >
-                <Sparkles className="h-4 w-4" />
-                AI 自动分类
-              </button>
+                 name="category" 
+                 value={category}
+                 onChange={(e) => setCategory(e.target.value)}
+                 className="flex-1 px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+               >
+                 <option value="实用软件">实用软件</option>
+                 <option value="技术教程">技术教程</option>
+                 <option value="源码分享">源码分享</option>
+                 <option value="操作系统">操作系统</option>
+                 <option value="游戏娱乐">游戏娱乐</option>
+                 <option value="媒体素材">媒体素材</option>
+                 <option value="其它资源">其它资源</option>
+               </select>
+               <button
+                 type="button"
+                 onClick={handleAutoClassify}
+                 disabled={isClassifying}
+                 className="px-4 py-2 bg-purple-100 text-purple-600 rounded-lg text-sm font-medium hover:bg-purple-200 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+               >
+                 <Sparkles className={`h-4 w-4 ${isClassifying ? 'animate-spin' : ''}`} />
+                 {isClassifying ? '分析中...' : 'AI 自动分类'}
+               </button>
             </div>
             <p className="text-xs text-gray-500 mt-1">目前支持手动选择，即将接入 DeepSeek 实现内容自动分析归类。</p>
           </div>
