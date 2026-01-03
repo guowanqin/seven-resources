@@ -140,6 +140,80 @@ export function getSortedResourcesData(): ResourceData[] {
 }
 
 export function getResourceData(id: string): ResourceData | null {
-  const resources = getSortedResourcesData()
-  return resources.find(r => r.id === id) || null
+  // Ensure public images dir exists
+  fs.ensureDirSync(publicImagesDirectory)
+
+  // 直接通过相对路径查找文件，支持子目录
+  // id 可能是 "folder/file" 格式
+  const fullPath = path.join(contentDirectory, `${id}.md`)
+
+  if (!fs.existsSync(fullPath)) {
+    return null
+  }
+
+  const fileContents = fs.readFileSync(fullPath, 'utf8')
+  const matterResult = matter(fileContents)
+
+  // --- Reuse the extraction logic from getSortedResourcesData ---
+  let { data, content } = matterResult
+    
+  // 1. Title Extraction
+  if (!data.title) {
+      const fileName = path.basename(fullPath, '.md')
+      const titleMatch = content.match(/^#\s+(.*)/m)
+      data.title = titleMatch ? titleMatch[1] : fileName
+      content = content.replace(/^#\s+.*\n+/, '')
+  }
+
+  // 2. Description Extraction
+  if (!data.description) {
+    const descMatch = content.match(/^[^#\n!\[].{10,100}/m)
+    data.description = descMatch ? descMatch[0].substring(0, 100) + '...' : '暂无简介'
+  }
+
+  // 3. Image Extraction & Copying
+  // Regex to find images: ![alt](path)
+  const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
+  let match
+  let firstImage = null
+  
+  // Process all images in content
+  let newContent = content
+  while ((match = imageRegex.exec(content)) !== null) {
+    const [fullMatch, alt, imagePath] = match
+    
+    // If it's a local relative path (not http/https)
+    if (!imagePath.startsWith('http') && !imagePath.startsWith('/')) {
+      const sourceImagePath = path.join(path.dirname(fullPath), imagePath)
+      
+      if (fs.existsSync(sourceImagePath)) {
+        const targetImageName = `${id}-${path.basename(imagePath)}`
+        const targetPath = path.join(publicImagesDirectory, targetImageName)
+        const publicUrl = `/images/content/${targetImageName}`
+        
+        fs.copySync(sourceImagePath, targetPath)
+        
+        newContent = newContent.replace(imagePath, publicUrl)
+        
+        if (!firstImage) firstImage = publicUrl
+      }
+    } else if (!firstImage) {
+        firstImage = imagePath
+    }
+  }
+  content = newContent
+
+  return {
+    id,
+    title: data.title,
+    description: data.description,
+    category: data.category || '未分类',
+    date: data.date || new Date().toISOString().split('T')[0],
+    views: data.views || 0,
+    likes: data.likes || 0,
+    isVip: data.isVip || false,
+    image: data.image || firstImage || 'https://via.placeholder.com/800x600?text=No+Image',
+    downloadUrl: data.downloadUrl || '',
+    content: content
+  }
 }
