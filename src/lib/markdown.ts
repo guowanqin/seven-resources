@@ -53,9 +53,10 @@ export function getSortedResourcesData(): ResourceData[] {
     const matterResult = matter(fileContents)
     
     // Generate ID (slug) from filename (without extension)
-    // Use slugify to ensure it's URL safe
     const fileName = path.basename(fullPath, '.md')
-    const id = slugify(fileName, { lower: true, strict: false, remove: /[*+~.()'"!:@]/g })
+    // Use filename as ID directly to support Chinese characters
+    // Next.js App Router handles UTF-8 paths well
+    const id = fileName
 
     // --- Auto-Extraction Logic (Compatibility Layer) ---
     let { data, content } = matterResult
