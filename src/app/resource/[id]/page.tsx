@@ -10,14 +10,18 @@ import { getResourceData, getSortedResourcesData } from '@/lib/markdown'
 export async function generateStaticParams() {
   const resources = getSortedResourcesData()
   return resources.map((resource) => ({
-    id: resource.id,
+    // Next.js App Router 动态路由参数 id 是数组 (捕获所有段)
+    // 需要修改文件名为 [...id]/page.tsx
+    id: resource.id.split('/'), 
   }))
 }
 
 // 静态页面的 Metadata
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string[] }> }) {
   const { id } = await params
-  const resource = getResourceData(id)
+  // 将数组重新组合成路径字符串，并解码
+  const decodedId = id.map(segment => decodeURIComponent(segment)).join('/')
+  const resource = getResourceData(decodedId)
 
   if (!resource) {
     return {
@@ -31,10 +35,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 }
 
-export default async function ResourceDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ResourceDetailPage({ params }: { params: Promise<{ id: string[] }> }) {
   const { id } = await params
-  // 对 id 进行解码，处理中文 URL
-  const decodedId = decodeURIComponent(id)
+  // 将数组重新组合成路径字符串，并解码
+  const decodedId = id.map(segment => decodeURIComponent(segment)).join('/')
   const resource = getResourceData(decodedId)
 
   if (!resource) {
