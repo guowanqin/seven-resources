@@ -84,16 +84,28 @@ export default function PublishPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">封面图片 URL</label>
-            <input 
-              name="image_url" 
-              type="url"
-              required 
-              className="w-full px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="https://example.com/image.jpg"
-              defaultValue="https://images.unsplash.com/photo-1626785774573-4b7993143a26?w=800&q=80"
-            />
-            <p className="text-xs text-gray-500 mt-1">暂支持外部图片链接，后续支持上传</p>
+            <label className="block text-sm font-medium text-gray-700 mb-1">封面图片</label>
+            <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                    <input 
+                    name="image_url" 
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    className="flex-1 px-4 py-2 rounded-lg border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="输入图片链接 或 点击右侧上传"
+                    />
+                    <label className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors flex items-center gap-2">
+                        {isUploading ? '上传中...' : '上传本地图片'}
+                        <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                        {!isUploading && <Upload className="h-4 w-4" />}
+                    </label>
+                </div>
+                {imageUrl && (
+                    <div className="relative w-full h-40 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    </div>
+                )}
+            </div>
           </div>
 
           <div>
