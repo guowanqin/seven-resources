@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ResourceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const resource = getResourceData(id)
+  // 对 id 进行解码，处理中文 URL
+  const decodedId = decodeURIComponent(id)
+  const resource = getResourceData(decodedId)
 
   if (!resource) {
     notFound()
