@@ -37,7 +37,7 @@ export default function ResourceCard({ resource }: { resource: ResourceProps }) 
 
       {/* 图片区域 */}
       <div className="relative h-48 overflow-hidden bg-gray-100">
-        <Link href={`/resource/${resource.id}`} className="block h-full">
+        <Link href={`/resource/${encodeURIComponent(resource.id)}`} className="block h-full">
            <img 
             src={displayImage} 
             alt={resource.title} 
@@ -46,7 +46,7 @@ export default function ResourceCard({ resource }: { resource: ResourceProps }) 
         </Link>
         {/* 悬浮遮罩 */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-             <Link href={`/resource/${resource.id}`} className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all transform scale-0 group-hover:scale-100 duration-300">
+             <Link href={`/resource/${encodeURIComponent(resource.id)}`} className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all transform scale-0 group-hover:scale-100 duration-300">
                 <Eye className="h-6 w-6" />
              </Link>
         </div>
@@ -55,7 +55,7 @@ export default function ResourceCard({ resource }: { resource: ResourceProps }) 
       {/* 内容区域 */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="font-bold text-base text-gray-800 mb-2 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
-          <Link href={`/resource/${resource.id}`}>
+          <Link href={`/resource/${encodeURIComponent(resource.id)}`}>
             {resource.title}
           </Link>
         </h3>
